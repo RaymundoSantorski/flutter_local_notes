@@ -1,21 +1,21 @@
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 
 class NoteService {
-  static late Isar isar;
-  static Future<void> init() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final auxIsar = await Isar.open([NoteSchema], directory: dir.path);
-    isar = auxIsar;
-  }
+  late Isar isar;
+  NoteService(this.isar);
 
-  static Future<List<Note>> get notes {
+  Future<List<Note>> get notes {
     final Future<List<Note>> notes = isar.notes.where().findAll();
     return notes;
   }
 
-  static void createNote({String? title, String? content}) async {
+  Future<Note?> getNoteByTitle(String title) async {
+    final notesByTitle = isar.notes.filter().titleEqualTo(title).findFirst();
+    return notesByTitle;
+  }
+
+  Future<void> createNote({String? title, String? content}) async {
     final newNote = Note()
       ..title = title
       ..content = content
@@ -25,13 +25,13 @@ class NoteService {
     });
   }
 
-  static void deleteNote(Id id) async {
+  Future<void> deleteNote(Id id) async {
     await isar.writeTxn(() async {
       await isar.notes.delete(id);
     });
   }
 
-  static updateNote(Id id, {String? title, String? content}) async {
+  Future<void> updateNote(Id id, {String? title, String? content}) async {
     final note = await isar.notes.get(id);
     if (note == null) return;
     note.title = title;

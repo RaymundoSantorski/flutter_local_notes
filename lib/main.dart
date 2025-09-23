@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notes/models/note_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NoteService.init();
   runApp(const MyApp());
 }
 
