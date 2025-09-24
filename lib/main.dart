@@ -3,13 +3,18 @@ import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open([NoteSchema], directory: dir.path);
-  NoteService(isar);
-  runApp(const MyApp());
+  runApp(
+    Provider<NoteService>(
+      create: (_) => NoteService(isar),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -12,6 +12,7 @@ void main() {
 
   late Isar isar;
   late String tempDirPath;
+  late NoteService noteService;
 
   setUpAll(() async {
     tempDirPath = Directory.systemTemp.createTempSync().path;
@@ -22,25 +23,67 @@ void main() {
   setUp(() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = await Isar.open([NoteSchema], name: 'testDB', directory: dir.path);
-    NoteService(isar);
+    noteService = NoteService(isar);
   });
 
   tearDown(() async {
     await isar.writeTxn(() => isar.notes.clear());
     await isar.close(deleteFromDisk: true);
+  });
+
+  tearDownAll(() async {
     Directory(tempDirPath).deleteSync(recursive: true);
   });
 
-  test('Debe añadir una nota', () async {
-    await NoteService.createNote(title: 'Nota 1', content: '');
+  test('Debe añadir una nota y obtenerla por titulo', () async {
+    await noteService.createNote(title: 'Nota 1', content: '');
 
-    final Note? note = await isar.notes
-        .filter()
-        .titleEqualTo('Nota 1')
-        .findFirst();
+    final Note? note = await noteService.getNoteByTitle('Nota 1');
 
     expect(note, isNotNull);
     expect(note!.content, '');
+  });
+
+  test('Debe añadir una nota y eliminarla correctamente', () async {
+    await noteService.createNote(title: 'Nota 2', content: '');
+
+    List<Note> notes = await noteService.notes;
+    expect(notes, isNotEmpty);
+
+    final Note? note = await noteService.getNoteByTitle('Nota 2');
+    expect(note, isNotNull);
+
+    await noteService.deleteNote(note!.id);
+    notes = await noteService.notes;
+    expect(notes, isEmpty);
+  });
+
+  test('Debe actualizar una nota correctamente', () async {
+    await noteService.createNote(
+      title: 'Nota a actualizar',
+      content: 'Contenido original',
+    );
+    final Note? originalNote = await noteService.getNoteByTitle(
+      'Nota a actualizar',
+    );
+
+    expect(originalNote, isNotNull);
+    expect(originalNote!.content, 'Contenido original');
+
+    final newTitle = 'Nota actualizada';
+    final newContent = 'Nuevo contenido';
+    await noteService.updateNote(
+      originalNote.id,
+      title: newTitle,
+      content: newContent,
+    );
+
+    final Note? updatedNote = await noteService.getNoteByTitle(newTitle);
+
+    expect(updatedNote, isNotNull);
+    expect(updatedNote!.title, newTitle);
+    expect(updatedNote.content, newContent);
+    expect(updatedNote.lastEdit, isNot(originalNote.lastEdit));
   });
 }
 
