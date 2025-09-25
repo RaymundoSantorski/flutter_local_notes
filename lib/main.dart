@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
+import 'package:flutter_local_notes/screens/new_note.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,22 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewNote()),
+          );
+        },
+        tooltip: 'Add Note',
+        child: const Icon(Icons.add),
+      ),
+      body: const Center(child: Text('Hello World')),
+    );
   }
 }
