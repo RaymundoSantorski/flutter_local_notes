@@ -50,10 +50,12 @@ void main() {
     List<Note> notes = await noteService.notes;
     expect(notes, isNotEmpty);
 
-    final Note? note = await noteService.getNoteByTitle('Nota 2');
+    Note? note = await noteService.getNoteByTitle('Nota 2');
     expect(note, isNotNull);
 
     await noteService.deleteNote(note!.id);
+    note = await noteService.getNoteByTitle('Nota 2');
+    expect(note, isNull);
     notes = await noteService.notes;
     expect(notes, isEmpty);
   });
