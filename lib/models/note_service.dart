@@ -1,14 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:isar/isar.dart';
 
-class NoteService {
+class NoteService extends ChangeNotifier {
   late Isar isar;
   NoteService(Isar isarObject) {
     isar = isarObject;
   }
 
-  Future<List<Note>> get notes {
-    final Future<List<Note>> notes = isar.notes.where().findAll();
+  List<Note> get notes {
+    final List<Note> notes = isar.notes.where().findAllSync();
     return notes;
   }
 
@@ -17,7 +18,7 @@ class NoteService {
     return notesByTitle;
   }
 
-  Future<void> createNote({String? title, String? content}) async {
+  Future<Note> createNote({String? title, String? content}) async {
     final newNote = Note()
       ..title = title
       ..content = content
@@ -25,12 +26,22 @@ class NoteService {
     await isar.writeTxn(() async {
       await isar.notes.put(newNote);
     });
+    notifyListeners();
+    return newNote;
+  }
+
+  Future<void> addNote(Note note) async {
+    await isar.writeTxn(() async {
+      await isar.notes.put(note);
+    });
+    notifyListeners();
   }
 
   Future<void> deleteNote(Id id) async {
     await isar.writeTxn(() async {
       await isar.notes.delete(id);
     });
+    notifyListeners();
   }
 
   Future<void> updateNote(Id id, {String? title, String? content}) async {
@@ -42,5 +53,6 @@ class NoteService {
     await isar.writeTxn(() async {
       await isar.notes.put(note);
     });
+    notifyListeners();
   }
 }
