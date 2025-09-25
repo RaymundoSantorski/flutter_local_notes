@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 
 class NoteService extends ChangeNotifier {
   late Isar isar;
-  String? currentSortOption;
+  String currentSortOption = 'lastEditDesc';
 
   NoteService(Isar isarObject) {
     isar = isarObject;
