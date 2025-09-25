@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
+import 'package:flutter_local_notes/screens/edit_note_screen.dart';
 import 'package:provider/provider.dart';
 
 class NotesScreen extends StatelessWidget {
@@ -23,7 +24,12 @@ class NotesScreen extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             onTap: () {
-              // Aquí podrías navegar a una pantalla de edición de nota
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditNoteScreen(note: note),
+                ),
+              );
             },
           );
         },
