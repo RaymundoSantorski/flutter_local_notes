@@ -17,6 +17,9 @@ class NotesScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final note = notes[index];
           return ListTile(
+            onLongPress: () {
+              noteService.deleteNote(note.id);
+            },
             title: Text(note.title ?? 'No Title'),
             subtitle: Text(
               note.content ?? 'No Content',

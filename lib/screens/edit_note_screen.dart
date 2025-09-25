@@ -91,6 +91,5 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
         style: const TextStyle(fontSize: 16, color: Colors.black87),
       ),
     );
-    ;
   }
 }
