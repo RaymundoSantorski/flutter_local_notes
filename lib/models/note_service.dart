@@ -4,13 +4,44 @@ import 'package:isar/isar.dart';
 
 class NoteService extends ChangeNotifier {
   late Isar isar;
+  String? currentSortOption;
+
   NoteService(Isar isarObject) {
     isar = isarObject;
   }
 
-  List<Note> get notes {
-    final List<Note> notes = isar.notes.where().findAllSync();
-    return notes;
+  List<Note> getNotes() {
+    if (currentSortOption == 'lastEditDesc') {
+      return isar.notes.where().sortByLastEditDesc().findAllSync();
+    } else if (currentSortOption == 'lastEditAsc') {
+      return isar.notes.where().sortByLastEdit().findAllSync();
+    } else if (currentSortOption == 'titleAsc') {
+      return isar.notes.where().sortByTitle().findAllSync();
+    } else if (currentSortOption == 'titleDesc') {
+      return isar.notes.where().sortByTitleDesc().findAllSync();
+    } else {
+      return isar.notes.where().findAllSync();
+    }
+  }
+
+  void setSortOption(String option) {
+    currentSortOption = option;
+    notifyListeners();
+  }
+
+  void sortByLastEdit() {
+    final List<Note> sortedNotes = isar.notes
+        .where()
+        .sortByLastEditDesc()
+        .findAllSync();
+    // Clear the existing notes and add the sorted ones
+    isar.writeTxnSync(() {
+      isar.notes.clearSync();
+      for (var note in sortedNotes) {
+        isar.notes.putSync(note);
+      }
+    });
+    notifyListeners();
   }
 
   Future<Note?> getNoteByTitle(String title) async {
