@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notes/models/note.dart';
+import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:isar/isar.dart';
+import 'package:provider/provider.dart';
 
 class NewNote extends StatefulWidget {
   NewNote({super.key});
@@ -14,18 +16,19 @@ class _NewNoteState extends State<NewNote> {
   String title = '';
 
   String content = '';
-  late Id id;
+  Id? id;
+  Note? note;
 
   @override
   Widget build(BuildContext context) {
-    void saveNote() {
+    final NoteService noteService = Provider.of<NoteService>(context);
+
+    void saveNote() async {
       if (id == null) {
-        final newNote = Note()
-          ..title = title
-          ..content = content
-          ..lastEdit = DateTime.now();
+        note = await noteService.createNote(title: title, content: content);
+        id = note!.id;
       } else {
-        // Lógica para actualizar la nota existente en la base de datos
+        noteService.updateNote(id!, title: title, content: content);
       }
     }
 
@@ -33,12 +36,14 @@ class _NewNoteState extends State<NewNote> {
       setState(() {
         title = value;
       });
+      saveNote();
     }
 
     void onContentChanged(String value) {
       setState(() {
         content = value;
       });
+      saveNote();
     }
 
     return Scaffold(
@@ -58,9 +63,9 @@ class _NewNoteState extends State<NewNote> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save_outlined),
+            icon: const Icon(Icons.check),
             onPressed: () {
-              // Lógica para guardar la nota
+              saveNote();
               Navigator.pop(context);
             },
           ),
