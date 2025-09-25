@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:flutter_local_notes/screens/new_note.dart';
+import 'package:flutter_local_notes/screens/notes_screen.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,7 @@ Future<void> main() async {
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open([NoteSchema], directory: dir.path);
   runApp(
-    Provider<NoteService>(
+    ChangeNotifierProvider<NoteService>(
       create: (_) => NoteService(isar),
       child: const MyApp(),
     ),
@@ -62,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
       ),
-      body: const Center(child: Text('Hello World')),
+      body: NotesScreen(),
     );
   }
 }
