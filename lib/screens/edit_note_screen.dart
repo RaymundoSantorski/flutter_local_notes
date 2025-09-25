@@ -51,44 +51,53 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
       saveNote();
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          if (title.isEmpty && content.isEmpty) {
+            noteService.deleteNote(widget.note.id);
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: TextField(
+            autocorrect: false,
+            controller: titleController,
+            decoration: const InputDecoration(
+              hintText: 'Title',
+              border: InputBorder.none,
+            ),
+            onChanged: onTitleChanged,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: () {
+                saveNote();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        body: TextField(
+          autofocus: true,
           autocorrect: false,
-          controller: titleController,
+          maxLines: null,
+          controller: contentController,
+          onChanged: onContentChanged,
           decoration: const InputDecoration(
-            hintText: 'Title',
+            hintText: 'Start typing...',
             border: InputBorder.none,
+            contentPadding: EdgeInsets.all(16.0),
           ),
-          onChanged: onTitleChanged,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-              saveNote();
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-      body: TextField(
-        autofocus: true,
-        autocorrect: false,
-        maxLines: null,
-        controller: contentController,
-        onChanged: onContentChanged,
-        decoration: const InputDecoration(
-          hintText: 'Start typing...',
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.all(16.0),
-        ),
-        style: const TextStyle(fontSize: 16, color: Colors.black87),
       ),
     );
   }
