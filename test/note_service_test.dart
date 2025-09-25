@@ -47,7 +47,7 @@ void main() {
   test('Debe añadir una nota y eliminarla correctamente', () async {
     await noteService.createNote(title: 'Nota 2', content: '');
 
-    List<Note> notes = await noteService.notes;
+    List<Note> notes = await noteService.getNotes();
     expect(notes, isNotEmpty);
 
     Note? note = await noteService.getNoteByTitle('Nota 2');
@@ -56,7 +56,7 @@ void main() {
     await noteService.deleteNote(note!.id);
     note = await noteService.getNoteByTitle('Nota 2');
     expect(note, isNull);
-    notes = await noteService.notes;
+    notes = await noteService.getNotes();
     expect(notes, isEmpty);
   });
 
