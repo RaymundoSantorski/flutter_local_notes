@@ -6,12 +6,13 @@ import 'package:flutter_local_notes/screens/empty_screen.dart';
 import 'package:provider/provider.dart';
 
 class NotesScreen extends StatelessWidget {
-  const NotesScreen({super.key});
+  const NotesScreen({super.key, required this.searchQuery});
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     final NoteService noteService = Provider.of<NoteService>(context);
-    List<Note> notes = noteService.getNotes();
+    List<Note> notes = noteService.getNotes(searchQuery);
     String currentSort = noteService.currentSortOption;
     return notes.isEmpty
         ? EmptyScreen()
