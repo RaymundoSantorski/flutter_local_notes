@@ -86,7 +86,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
           ],
         ),
         body: TextField(
-          autofocus: true,
+          autofocus: false,
           autocorrect: false,
           maxLines: null,
           controller: contentController,

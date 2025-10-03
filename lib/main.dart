@@ -46,17 +46,44 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool isSearching = false;
+  String searchQuery = '';
+  final TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: isSearching
+            ? Card(
+                child: TextField(
+                  controller: searchController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Search notes...',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(8.0),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
+                ),
+              )
+            : Text(widget.title),
         actions: [
           IconButton(
             onPressed: () {
-              // Acción al presionar el botón de búsqueda
+              setState(() {
+                isSearching = !isSearching;
+                if (!isSearching) {
+                  searchQuery = '';
+                  searchController.clear();
+                }
+              });
             },
-            icon: Icon(Icons.search),
+            icon: Icon(isSearching ? Icons.close : Icons.search),
           ),
         ],
       ),
@@ -70,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
       ),
-      body: NotesScreen(),
+      body: NotesScreen(searchQuery: searchQuery),
     );
   }
 }
