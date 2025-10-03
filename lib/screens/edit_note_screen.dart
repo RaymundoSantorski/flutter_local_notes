@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
+import 'package:flutter_local_notes/widgets/edit_note_content.dart';
+import 'package:flutter_local_notes/widgets/edit_note_title.dart';
 import 'package:provider/provider.dart';
 
 class EditNoteScreen extends StatefulWidget {
@@ -61,19 +63,9 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: TextField(
-            autocorrect: false,
-            controller: titleController,
-            decoration: const InputDecoration(
-              hintText: 'Title',
-              border: InputBorder.none,
-            ),
-            onChanged: onTitleChanged,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+          title: EditNoteTitle(
+            titleController: titleController,
+            onTitleChanged: onTitleChanged,
           ),
           actions: [
             IconButton(
@@ -85,18 +77,9 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
             ),
           ],
         ),
-        body: TextField(
-          autofocus: false,
-          autocorrect: false,
-          maxLines: null,
-          controller: contentController,
-          onChanged: onContentChanged,
-          decoration: const InputDecoration(
-            hintText: 'Start typing...',
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(16.0),
-          ),
-          style: const TextStyle(fontSize: 16, color: Colors.black87),
+        body: EditNoteContent(
+          contentController: contentController,
+          onContentChanged: onContentChanged,
         ),
       ),
     );

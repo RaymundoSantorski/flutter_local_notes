@@ -3,6 +3,7 @@ import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:flutter_local_notes/screens/new_note.dart';
 import 'package:flutter_local_notes/screens/notes_screen.dart';
+import 'package:flutter_local_notes/widgets/search_bar.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -50,26 +51,20 @@ class _MyHomePageState extends State<MyHomePage> {
   String searchQuery = '';
   final TextEditingController searchController = TextEditingController();
 
+  void onChanged(String value) {
+    setState(() {
+      searchQuery = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: isSearching
-            ? Card(
-                child: TextField(
-                  controller: searchController,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    hintText: 'Search notes...',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(8.0),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value;
-                    });
-                  },
-                ),
+            ? SearchNotesBar(
+                searchController: searchController,
+                onChanged: onChanged,
               )
             : Text(widget.title),
         actions: [

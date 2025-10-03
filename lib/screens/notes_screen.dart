@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
-import 'package:flutter_local_notes/screens/edit_note_screen.dart';
 import 'package:flutter_local_notes/screens/empty_screen.dart';
+import 'package:flutter_local_notes/widgets/notes_list.dart';
+import 'package:flutter_local_notes/widgets/sort_row.dart';
 import 'package:provider/provider.dart';
 
 class NotesScreen extends StatelessWidget {
@@ -19,66 +20,8 @@ class NotesScreen extends StatelessWidget {
         : SafeArea(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton.icon(
-                      onPressed: () {
-                        noteService.setSortOption(
-                          currentSort == 'lastEditAsc'
-                              ? 'lastEditDesc'
-                              : 'lastEditAsc',
-                        );
-                      },
-                      label: Text('Date'),
-                      icon: Icon(
-                        currentSort == 'lastEditDesc'
-                            ? Icons.arrow_downward
-                            : Icons.arrow_upward,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        noteService.setSortOption(
-                          currentSort == 'titleAsc' ? 'titleDesc' : 'titleAsc',
-                        );
-                      },
-                      label: Text('Title'),
-                      icon: Icon(
-                        currentSort == 'titleDesc'
-                            ? Icons.arrow_downward
-                            : Icons.arrow_upward,
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: notes.length,
-                    itemBuilder: (context, index) {
-                      final note = notes[index];
-                      return ListTile(
-                        onLongPress: () {
-                          noteService.deleteNote(note.id);
-                        },
-                        title: Text(note.title ?? 'No Title'),
-                        subtitle: Text(
-                          note.content ?? 'No Content',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditNoteScreen(note: note),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
+                SortRow(currentSort: currentSort, noteService: noteService),
+                NotesList(notes: notes, noteService: noteService),
               ],
             ),
           );
