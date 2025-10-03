@@ -10,7 +10,24 @@ class NoteService extends ChangeNotifier {
     isar = isarObject;
   }
 
-  List<Note> getNotes() {
+  List<Note> getNotes(String searchQuery) {
+    if (searchQuery.isEmpty) {
+      return getSortedNotes();
+    } else {
+      final lowerCaseQuery = searchQuery.toLowerCase();
+      return getSortedNotes()
+          .where(
+            (note) =>
+                (note.title != null &&
+                    note.title!.toLowerCase().contains(lowerCaseQuery)) ||
+                (note.content != null &&
+                    note.content!.toLowerCase().contains(lowerCaseQuery)),
+          )
+          .toList();
+    }
+  }
+
+  List<Note> getSortedNotes() {
     if (currentSortOption == 'lastEditDesc') {
       return isar.notes.where().sortByLastEditDesc().findAllSync();
     } else if (currentSortOption == 'lastEditAsc') {
@@ -26,21 +43,6 @@ class NoteService extends ChangeNotifier {
 
   void setSortOption(String option) {
     currentSortOption = option;
-    notifyListeners();
-  }
-
-  void sortByLastEdit() {
-    final List<Note> sortedNotes = isar.notes
-        .where()
-        .sortByLastEditDesc()
-        .findAllSync();
-    // Clear the existing notes and add the sorted ones
-    isar.writeTxnSync(() {
-      isar.notes.clearSync();
-      for (var note in sortedNotes) {
-        isar.notes.putSync(note);
-      }
-    });
     notifyListeners();
   }
 
