@@ -10,7 +10,7 @@ class SortRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         SortOpt(opt1: 'lastEditAsc', opt2: 'lastEditDesc', label: 'Date'),
-        SortOpt(opt1: 'titleAsc', opt2: 'titleAsc', label: 'Title'),
+        SortOpt(opt1: 'titleAsc', opt2: 'titleDesc', label: 'Title'),
       ],
     );
   }
