@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:flutter_local_notes/widgets/sort_opt.dart';
 
 class SortRow extends StatelessWidget {
-  const SortRow({
-    super.key,
-    required this.currentSort,
-    required this.noteService,
-  });
-  final String currentSort;
-  final NoteService noteService;
+  const SortRow({super.key});
 
   @override
   Widget build(BuildContext context) {

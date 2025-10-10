@@ -14,13 +14,12 @@ class NotesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final NoteService noteService = Provider.of<NoteService>(context);
     List<Note> notes = noteService.getNotes(searchQuery);
-    String currentSort = noteService.currentSortOption;
     return notes.isEmpty
         ? EmptyScreen()
         : SafeArea(
             child: Column(
               children: [
-                SortRow(currentSort: currentSort, noteService: noteService),
+                SortRow(),
                 NotesList(notes: notes, noteService: noteService),
               ],
             ),
