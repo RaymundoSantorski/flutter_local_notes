@@ -3,6 +3,7 @@ import 'package:flutter_local_notes/models/note.dart';
 import 'package:flutter_local_notes/models/note_service.dart';
 import 'package:flutter_local_notes/screens/new_note.dart';
 import 'package:flutter_local_notes/screens/notes_screen.dart';
+import 'package:flutter_local_notes/widgets/fab.dart';
 import 'package:flutter_local_notes/widgets/search_bar.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -57,6 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void toggleSearch() {
+    setState(() {
+      isSearching = !isSearching;
+      if (!isSearching) {
+        searchQuery = '';
+        searchController.clear();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,29 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
             : Text(widget.title),
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                isSearching = !isSearching;
-                if (!isSearching) {
-                  searchQuery = '';
-                  searchController.clear();
-                }
-              });
-            },
+            onPressed: toggleSearch,
             icon: Icon(isSearching ? Icons.close : Icons.search),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewNote()),
-          );
-        },
-        tooltip: 'Add Note',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const Fab(),
       body: NotesScreen(searchQuery: searchQuery),
     );
   }
