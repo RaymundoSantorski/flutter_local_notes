@@ -58,6 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void toggleSearch() {
+    setState(() {
+      isSearching = !isSearching;
+      if (!isSearching) {
+        searchQuery = '';
+        searchController.clear();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,15 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
             : Text(widget.title),
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                isSearching = !isSearching;
-                if (!isSearching) {
-                  searchQuery = '';
-                  searchController.clear();
-                }
-              });
-            },
+            onPressed: toggleSearch,
             icon: Icon(isSearching ? Icons.close : Icons.search),
           ),
         ],
